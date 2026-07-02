@@ -1,5 +1,5 @@
 import pytest
-from werkzeug.http import parse_set_header
+from werkzeug.datastructures import HeaderSet
 
 import flask.views
 from flask.testing import FlaskClient
@@ -11,7 +11,7 @@ def common_test(app):
     assert c.get("/").data == b"GET"
     assert c.post("/").data == b"POST"
     assert c.put("/").status_code == 405
-    meths = parse_set_header(c.open("/", method="OPTIONS").headers["Allow"])
+    meths = HeaderSet.from_header(c.open("/", method="OPTIONS").headers["Allow"])
     assert sorted(meths) == ["GET", "HEAD", "OPTIONS", "POST"]
 
 
