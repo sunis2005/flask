@@ -1,6 +1,7 @@
 import pytest
 from jinja2 import TemplateNotFound
-from werkzeug.http import parse_cache_control_header
+from werkzeug.datastructures import CacheControl
+
 
 import flask
 
@@ -200,7 +201,7 @@ def test_templates_and_static(test_apps):
         app.config["SEND_FILE_MAX_AGE_DEFAULT"] = expected_max_age
 
         with client.get("/admin/static/css/test.css") as rv:
-            cc = parse_cache_control_header(rv.headers["Cache-Control"])
+            cc = CacheControl.from_header(rv.headers["Cache-Control"])
             assert cc.max_age == expected_max_age
     finally:
         app.config["SEND_FILE_MAX_AGE_DEFAULT"] = max_age_default
